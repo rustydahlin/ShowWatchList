@@ -1,4 +1,4 @@
-# Jonah's Watch List
+# Show Watch List
 
 A local Node.js app for tracking and ranking movies and TV shows, with ratings and drag-and-drop reordering.
 
