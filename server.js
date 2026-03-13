@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 const DATA_FILE = path.join(__dirname, 'data', 'watchlist.json');
 
 app.use(express.json());
@@ -118,6 +118,6 @@ if (!fs.existsSync(DATA_FILE)) {
   console.log('Created data/watchlist.json');
 }
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`WatchList running at http://localhost:${PORT}`);
 });

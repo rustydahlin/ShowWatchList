@@ -621,6 +621,40 @@ header h1 {
   100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
 }
 
+/* ── Mobile ─────────────────────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .container { padding: 1.25rem 0.75rem 4rem; }
+
+  header h1 { font-size: 1.5rem; }
+  .logo-icon { font-size: 2rem; }
+
+  .item {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .item-title {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .item-rating { font-size: 0.75rem; }
+
+  .item-actions {
+    flex: 0 0 100%;
+    justify-content: flex-end;
+  }
+
+  /* Always show rename btn on mobile (no hover) */
+  .btn-icon.rename-btn { opacity: 1; }
+
+  .btn-icon {
+    padding: 4px 8px;
+    font-size: 0.74rem;
+  }
+}
+
 /* ── Shared animations ──────────────────────────────────────────────────────── */
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-14px); }
