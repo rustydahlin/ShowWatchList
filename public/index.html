@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jonah's Watch List</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Floating particles background -->
+  <div class="bg-particles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span>
+  </div>
+
+  <div class="container">
+    <header>
+      <div class="logo-wrap">
+        <span class="logo-icon">🎬</span>
+        <div>
+          <h1 id="pageTitle">Watch List</h1>
+          <p class="subtitle">Your ranked queue of movies &amp; shows</p>
+        </div>
+      </div>
+      <div id="statsBar" class="stats-bar"></div>
+    </header>
+
+    <!-- Add Form Card -->
+    <div class="add-card">
+      <div class="add-card-label">What do you want to watch?</div>
+      <div class="add-row">
+        <input type="text" id="titleInput" placeholder="Enter a title…" autocomplete="off" autofocus>
+        <button id="addBtn" title="Add to list">
+          <span class="add-btn-plus">+</span>
+          <span class="add-btn-text">Add</span>
+        </button>
+      </div>
+      <div class="type-toggle" id="typeToggle">
+        <button class="type-pill active" data-type="movie">🎥 Movie</button>
+        <button class="type-pill" data-type="show">📺 TV Show</button>
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-filter="all">All</button>
+      <button class="tab" data-filter="unwatched">⏳ To Watch</button>
+      <button class="tab" data-filter="watched">✅ Watched</button>
+    </div>
+
+    <!-- Two separate lists -->
+    <div class="lists-grid">
+      <div class="list-section" id="list-section-movie">
+        <div class="section-header">
+          <span class="section-icon">🎥</span>
+          <span class="section-title">Movies</span>
+          <span class="section-count" id="count-movie"></span>
+        </div>
+        <ul id="list-movie" class="watchlist"></ul>
+        <div id="empty-movie" class="section-empty hidden">
+          <div class="empty-icon">🎬</div>
+          <p>No movies yet.</p>
+        </div>
+      </div>
+
+      <div class="list-section" id="list-section-show">
+        <div class="section-header">
+          <span class="section-icon">📺</span>
+          <span class="section-title">TV Shows</span>
+          <span class="section-count" id="count-show"></span>
+        </div>
+        <ul id="list-show" class="watchlist"></ul>
+        <div id="empty-show" class="section-empty hidden">
+          <div class="empty-icon">📡</div>
+          <p>No shows yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rating Modal -->
+  <div id="ratingModal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-emoji" id="modalEmoji">🎉</div>
+      <h2>How was it?</h2>
+      <p id="modalTitle" class="modal-item-title"></p>
+      <div class="stars" id="starPicker">
+        <span class="star" data-value="1">★</span>
+        <span class="star" data-value="2">★</span>
+        <span class="star" data-value="3">★</span>
+        <span class="star" data-value="4">★</span>
+        <span class="star" data-value="5">★</span>
+      </div>
+      <p class="star-label" id="starLabel">Tap a star to rate</p>
+      <div class="modal-actions">
+        <button id="submitRating" disabled>Save Rating</button>
+        <button id="skipRating" class="secondary">Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name setup modal (first launch) -->
+  <div id="nameModal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-emoji">👋</div>
+      <h2>Welcome!</h2>
+      <p class="modal-item-title">What's your name? We'll personalise your list.</p>
+      <input type="text" id="nameInput" class="name-input" placeholder="Enter your name…" autocomplete="off" maxlength="30">
+      <div class="modal-actions" style="margin-top:1.25rem">
+        <button id="saveNameBtn">Let's go!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti container -->
+  <div id="confetti" aria-hidden="true"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

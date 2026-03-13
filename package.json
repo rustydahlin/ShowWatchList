@@ -1,0 +1,12 @@
+{
+  "name": "watchlist-ratings",
+  "version": "1.0.0",
+  "description": "Track and rate movies and TV shows",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
