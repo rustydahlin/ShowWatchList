@@ -517,11 +517,24 @@ header h1 {
 .modal-item-title {
   color: #888;
   font-size: 0.88rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+/* Rating sections */
+.rating-section {
+  margin-bottom: 0.75rem;
+}
+.rating-section-label {
+  font-size: 0.72rem;
+  color: #555;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 0.35rem;
 }
 
 /* Star picker */
@@ -529,10 +542,10 @@ header h1 {
   display: flex;
   justify-content: center;
   gap: 0.3rem;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.35rem;
 }
 .star {
-  font-size: 2.4rem;
+  font-size: 2.2rem;
   color: #252535;
   cursor: pointer;
   transition: color 0.12s, transform 0.12s;
@@ -544,6 +557,20 @@ header h1 {
 .star:hover { transform: scale(1.25) rotate(-5deg); }
 .star.selected { animation: starPop 0.2s ease both; }
 
+/* Popcorn picker */
+.popcorn {
+  font-size: 2rem;
+  cursor: pointer;
+  transition: opacity 0.12s, transform 0.12s, filter 0.12s;
+  user-select: none;
+  display: inline-block;
+  opacity: 0.18;
+  filter: grayscale(60%);
+}
+.popcorn.hovered { opacity: 0.6; filter: grayscale(0%); }
+.popcorn.selected { opacity: 1; filter: grayscale(0%); animation: starPop 0.2s ease both; }
+.popcorn:hover { transform: scale(1.25) rotate(5deg); }
+
 @keyframes starPop {
   0%   { transform: scale(1); }
   50%  { transform: scale(1.35); }
@@ -552,11 +579,35 @@ header h1 {
 
 .star-label {
   color: #666;
-  font-size: 0.88rem;
-  min-height: 1.3em;
-  margin-bottom: 1.5rem;
+  font-size: 0.84rem;
+  min-height: 1.2em;
+  margin-bottom: 0;
   transition: color 0.2s;
   font-weight: 600;
+}
+
+/* Combined score */
+.combined-score {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.1rem;
+  margin: 0.75rem 0 1rem;
+}
+.combined-score.hidden { display: none !important; }
+.score-num {
+  font-size: 2.4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #f5c518, #ff9500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+.score-denom {
+  font-size: 1.1rem;
+  color: #555;
+  font-weight: 700;
 }
 
 /* Name setup input */

@@ -82,17 +82,38 @@
   <!-- Rating Modal -->
   <div id="ratingModal" class="modal-overlay hidden">
     <div class="modal">
-      <div class="modal-emoji" id="modalEmoji">🎉</div>
+      <div class="modal-emoji" id="modalEmoji">🎬</div>
       <h2>How was it?</h2>
       <p id="modalTitle" class="modal-item-title"></p>
-      <div class="stars" id="starPicker">
-        <span class="star" data-value="1">★</span>
-        <span class="star" data-value="2">★</span>
-        <span class="star" data-value="3">★</span>
-        <span class="star" data-value="4">★</span>
-        <span class="star" data-value="5">★</span>
+
+      <div class="rating-section">
+        <div class="rating-section-label">⭐ Quality — how well made is it?</div>
+        <div class="stars" id="starPicker">
+          <span class="star" data-value="1">★</span>
+          <span class="star" data-value="2">★</span>
+          <span class="star" data-value="3">★</span>
+          <span class="star" data-value="4">★</span>
+          <span class="star" data-value="5">★</span>
+        </div>
+        <p class="star-label" id="starLabel">Tap a star to rate quality</p>
       </div>
-      <p class="star-label" id="starLabel">Tap a star to rate</p>
+
+      <div class="rating-section">
+        <div class="rating-section-label">🍿 Enjoyment — how fun was it to watch?</div>
+        <div class="stars" id="popcornPicker">
+          <span class="popcorn" data-value="1">🍿</span>
+          <span class="popcorn" data-value="2">🍿</span>
+          <span class="popcorn" data-value="3">🍿</span>
+          <span class="popcorn" data-value="4">🍿</span>
+          <span class="popcorn" data-value="5">🍿</span>
+        </div>
+        <p class="star-label" id="popcornLabel">Tap a popcorn to rate enjoyment</p>
+      </div>
+
+      <div class="combined-score hidden" id="combinedScore">
+        <span class="score-num" id="scoreNum">0</span><span class="score-denom">/10</span>
+      </div>
+
       <div class="modal-actions">
         <button id="submitRating" disabled>Save Rating</button>
         <button id="skipRating" class="secondary">Skip</button>

@@ -1,4 +1,5 @@
-const STAR_LABELS = ['', 'Terrible 😬', 'Meh 😐', 'Good 👍', 'Great 🔥', 'Must Watch 🌟'];
+const STAR_LABELS    = ['', 'Terrible 😬', 'Meh 😐', 'Good 👍', 'Great 🔥', 'Masterpiece 🌟'];
+const POPCORN_LABELS = ['', 'Boring 😴', 'Okay 😑', 'Fun 😄', 'Great time 🎉', 'A blast! 🤩'];
 const CONFETTI_COLORS = ['#6c6cff','#b89cff','#6fe0b0','#f5c518','#ff6b6b','#ffffff','#ffd700'];
 
 let items = [];
@@ -67,9 +68,12 @@ function itemsOfType(type) {
   ];
 }
 
-function starsDisplay(rating) {
-  if (rating === null || rating === undefined) return '';
-  return `<span class="item-rating">${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}<span class="rating-num">${rating}/5</span></span>`;
+function starsDisplay(stars, popcorn) {
+  if (!stars && !popcorn) return '';
+  const combined = (stars || 0) + (popcorn || 0);
+  const starsStr   = stars   ? `${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}` : '☆☆☆☆☆';
+  const popcornStr = popcorn ? '🍿'.repeat(popcorn) : '–';
+  return `<span class="item-rating">${starsStr} ${popcornStr}<span class="rating-num">${combined}/10</span></span>`;
 }
 
 function updateStats() {
@@ -120,12 +124,12 @@ function renderSection(type) {
       <span class="drag-handle" title="Drag to reorder">⠿</span>
       <span class="rank">#${item.rank}</span>
       <span class="item-title" title="${escHtml(item.title)}">${escHtml(item.title)}</span>
-      ${starsDisplay(item.rating)}
+      ${starsDisplay(item.stars, item.popcorn)}
       <div class="item-actions">
         <button class="btn-icon rename-btn" data-id="${item.id}" title="Rename">✏️</button>
         ${item.watched
           ? `<button class="btn-icon unwatch-btn" data-id="${item.id}">↩ Unwatch</button>
-             <button class="btn-icon rate-btn"    data-id="${item.id}">★ Rate</button>`
+             <button class="btn-icon rate-btn"    data-id="${item.id}">★🍿 Rate</button>`
           : `<button class="btn-icon watch-btn"   data-id="${item.id}">✓ Watched</button>`
         }
         <button class="btn-icon delete-btn" data-id="${item.id}">✕</button>
@@ -165,7 +169,7 @@ async function markWatched(id) {
 }
 
 async function unwatch(id) {
-  await api('PUT', `/api/items/${id}`, { watched: false, rating: null });
+  await api('PUT', `/api/items/${id}`, { watched: false, stars: null, popcorn: null });
   await loadItems();
 }
 
@@ -270,58 +274,97 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 // ── Rating modal ─────────────────────────────────────────────────────────────
 let pendingRatingId = null;
-let selectedRating  = null;
+let selectedStars   = null;
+let selectedPopcorn = null;
 
 function openRatingModal(id) {
   pendingRatingId = id;
-  selectedRating  = null;
+  selectedStars   = null;
+  selectedPopcorn = null;
   const item = items.find(i => i.id === id);
 
-  document.getElementById('modalTitle').textContent = item ? item.title : '';
-  document.getElementById('starLabel').textContent   = 'Tap a star to rate';
-  document.getElementById('submitRating').disabled   = true;
-  document.getElementById('modalEmoji').textContent  = item?.type === 'movie' ? '🎬' : '📺';
+  document.getElementById('modalTitle').textContent   = item ? item.title : '';
+  document.getElementById('starLabel').textContent    = 'Tap a star to rate quality';
+  document.getElementById('popcornLabel').textContent = 'Tap a popcorn to rate enjoyment';
+  document.getElementById('submitRating').disabled    = true;
+  document.getElementById('modalEmoji').textContent   = item?.type === 'movie' ? '🎬' : '📺';
 
   document.querySelectorAll('#starPicker .star').forEach(s => s.classList.remove('selected', 'hovered'));
+  document.querySelectorAll('#popcornPicker .popcorn').forEach(p => p.classList.remove('selected', 'hovered'));
+  document.getElementById('combinedScore').classList.add('hidden');
 
-  if (item && item.rating) {
-    selectedRating = item.rating;
-    highlightStars(item.rating, 'selected');
-    document.getElementById('starLabel').textContent = STAR_LABELS[item.rating];
-    document.getElementById('submitRating').disabled = false;
+  if (item && item.stars) {
+    selectedStars = item.stars;
+    highlightPicker('#starPicker .star', item.stars, 'selected');
+    document.getElementById('starLabel').textContent = STAR_LABELS[item.stars];
   }
+  if (item && item.popcorn) {
+    selectedPopcorn = item.popcorn;
+    highlightPicker('#popcornPicker .popcorn', item.popcorn, 'selected');
+    document.getElementById('popcornLabel').textContent = POPCORN_LABELS[item.popcorn];
+  }
+  if (selectedStars && selectedPopcorn) updateCombinedScore();
 
   document.getElementById('ratingModal').classList.remove('hidden');
 }
 
-function highlightStars(upTo, cls) {
-  document.querySelectorAll('#starPicker .star').forEach(s => {
-    s.classList.remove(cls);
-    if (parseInt(s.dataset.value) <= upTo) s.classList.add(cls);
+function highlightPicker(selector, upTo, cls) {
+  document.querySelectorAll(selector).forEach(el => {
+    el.classList.remove(cls);
+    if (parseInt(el.dataset.value) <= upTo) el.classList.add(cls);
   });
+}
+
+function updateCombinedScore() {
+  if (!selectedStars || !selectedPopcorn) {
+    document.getElementById('combinedScore').classList.add('hidden');
+    document.getElementById('submitRating').disabled = true;
+    return;
+  }
+  document.getElementById('scoreNum').textContent = selectedStars + selectedPopcorn;
+  document.getElementById('combinedScore').classList.remove('hidden');
+  document.getElementById('submitRating').disabled = false;
 }
 
 document.querySelectorAll('#starPicker .star').forEach(star => {
   star.addEventListener('mouseenter', () => {
     const val = parseInt(star.dataset.value);
-    highlightStars(val, 'hovered');
+    highlightPicker('#starPicker .star', val, 'hovered');
     document.getElementById('starLabel').textContent = STAR_LABELS[val];
   });
   star.addEventListener('mouseleave', () => {
     document.querySelectorAll('#starPicker .star').forEach(s => s.classList.remove('hovered'));
-    document.getElementById('starLabel').textContent = selectedRating ? STAR_LABELS[selectedRating] : 'Tap a star to rate';
+    document.getElementById('starLabel').textContent = selectedStars ? STAR_LABELS[selectedStars] : 'Tap a star to rate quality';
   });
   star.addEventListener('click', () => {
-    selectedRating = parseInt(star.dataset.value);
-    highlightStars(selectedRating, 'selected');
-    document.getElementById('starLabel').textContent = STAR_LABELS[selectedRating];
-    document.getElementById('submitRating').disabled = false;
+    selectedStars = parseInt(star.dataset.value);
+    highlightPicker('#starPicker .star', selectedStars, 'selected');
+    document.getElementById('starLabel').textContent = STAR_LABELS[selectedStars];
+    updateCombinedScore();
+  });
+});
+
+document.querySelectorAll('#popcornPicker .popcorn').forEach(popcorn => {
+  popcorn.addEventListener('mouseenter', () => {
+    const val = parseInt(popcorn.dataset.value);
+    highlightPicker('#popcornPicker .popcorn', val, 'hovered');
+    document.getElementById('popcornLabel').textContent = POPCORN_LABELS[val];
+  });
+  popcorn.addEventListener('mouseleave', () => {
+    document.querySelectorAll('#popcornPicker .popcorn').forEach(p => p.classList.remove('hovered'));
+    document.getElementById('popcornLabel').textContent = selectedPopcorn ? POPCORN_LABELS[selectedPopcorn] : 'Tap a popcorn to rate enjoyment';
+  });
+  popcorn.addEventListener('click', () => {
+    selectedPopcorn = parseInt(popcorn.dataset.value);
+    highlightPicker('#popcornPicker .popcorn', selectedPopcorn, 'selected');
+    document.getElementById('popcornLabel').textContent = POPCORN_LABELS[selectedPopcorn];
+    updateCombinedScore();
   });
 });
 
 document.getElementById('submitRating').addEventListener('click', async () => {
-  if (!selectedRating || !pendingRatingId) return;
-  await api('PUT', `/api/items/${pendingRatingId}`, { rating: selectedRating });
+  if (!selectedStars || !selectedPopcorn || !pendingRatingId) return;
+  await api('PUT', `/api/items/${pendingRatingId}`, { stars: selectedStars, popcorn: selectedPopcorn });
   closeModal();
   await loadItems();
 });
@@ -334,7 +377,8 @@ document.getElementById('ratingModal').addEventListener('click', e => {
 function closeModal() {
   document.getElementById('ratingModal').classList.add('hidden');
   pendingRatingId = null;
-  selectedRating  = null;
+  selectedStars   = null;
+  selectedPopcorn = null;
 }
 
 // ── Confetti ─────────────────────────────────────────────────────────────────

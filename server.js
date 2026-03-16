@@ -52,7 +52,8 @@ app.post('/api/items', (req, res) => {
     title,
     type,
     watched: false,
-    rating: null,
+    stars: null,
+    popcorn: null,
     rank: data.items.filter(i => i.type === type).length + 1,
     addedAt: new Date().toISOString()
   };
@@ -67,11 +68,12 @@ app.put('/api/items/:id', (req, res) => {
   const idx = data.items.findIndex(i => i.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Not found' });
 
-  const { watched, rating, title, type } = req.body;
-  if (watched !== undefined) data.items[idx].watched = watched;
-  if (rating  !== undefined) data.items[idx].rating  = rating;
-  if (title   !== undefined) data.items[idx].title   = title;
-  if (type    !== undefined) data.items[idx].type    = type;
+  const { watched, stars, popcorn, title, type } = req.body;
+  if (watched !== undefined) data.items[idx].watched  = watched;
+  if (stars   !== undefined) data.items[idx].stars    = stars;
+  if (popcorn !== undefined) data.items[idx].popcorn  = popcorn;
+  if (title   !== undefined) data.items[idx].title    = title;
+  if (type    !== undefined) data.items[idx].type     = type;
 
   writeData(data);
   res.json(data.items[idx]);
